@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<klayout-macro>
+  <description>Save layout image</description>
+  <version>0.1</version>
+  <category>misc</category>
+  <prolog>
+    # Run with: klayout -b -r save_image.lym
+  </prolog>
+  <text>
+    # KLayout macro to save layout image
+    
+    # Get run directory from environment or use default
+    run_dir = ENV["PD_RUN_DIR"] || "runs/run_20260310_222351"
+    def_file = "#{run_dir}/results/aes_top.def"
+    output_file = "#{run_dir}/images/layout.png"
+    
+    puts "=== Generating Layout Image ==="
+    puts "DEF: #{def_file}"
+    puts "Output: #{output_file}"
+    
+    # Create layout view
+    view = RBA::LayoutView::new
+    
+    # Load layout
+    view.load_layout(def_file, 0)
+    
+    # Zoom to fit
+    view.zoom_fit
+    
+    # Create images directory
+    Dir.mkdir("#{run_dir}/images") unless File.exist?("#{run_dir}/images")
+    
+    # Save image
+    view.save_image(output_file, 1920, 1080)
+    
+    puts "✅ Image saved: #{output_file}"
+    puts "Done!"
+  </text>
+</klayout-macro>

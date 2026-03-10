@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<technology>
+  <name>sky130_osu_15t</name>
+  <description>Sky130 OSU 15T Technology</description>
+  <dbu>0.001</dbu>
+  <layer-properties_file></layer-properties_file>
+  <add-other-layers>true</add-other-layers>
+  <lefdef>
+    <lef-files>/silicogenplayground/Work/vlsi/pdks/open_pdks/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/lef/sky130_osu_sc_15T_ls.lef</lef-files>
+  </lefdef>
+</technology>
