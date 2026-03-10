@@ -14,7 +14,7 @@ if {[info exists ::env(PDK_ROOT)]} {
 }
 
 # Read technology LEF
-read_lef $pdk_root/sky130/sky130A/libs.tech/openroad/sky130hd.tlef
+read_lef $pdk_root/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/techlef/sky130_osu_sc_15t_ls.tlef
 
 # Read standard cell LEF
 read_lef $pdk_root/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/lef/sky130_osu_sc_15T_ls.lef
