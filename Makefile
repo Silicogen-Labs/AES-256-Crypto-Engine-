@@ -127,3 +127,19 @@ pd: synth pd-check
 pd-clean:
 	rm -rf $(PD_DIR)
 	@echo "Cleaned physical design files"
+
+# Automated PD flow with timestamped runs
+pd-auto: synth-pd pd-check
+	@echo "Running automated physical design flow..."
+	@mkdir -p $(PD_DIR)/runs
+	@cd $(PD_DIR) && $(OPENROAD) -exit scripts/pd_flow.tcl 2>&1 | tee runs/latest_flow.log
+	@echo "Flow complete. Check $(PD_DIR)/runs/latest/ for results"
+
+# List all PD runs
+pd-runs:
+	@ls -lt $(PD_DIR)/runs/ | head -20
+
+# Clean old runs (keep last 5)
+pd-cleanup:
+	@cd $(PD_DIR)/runs && ls -t | tail -n +6 | xargs -r rm -rf
+	@echo "Cleaned old runs, kept last 5"
