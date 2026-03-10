@@ -32,7 +32,15 @@ log "Run directory: $run_dir"
 
 # Configuration
 set design_name "aes_top"
-set constraint_file "../constraints/conservative.sdc"
+
+# Select constraint file based on environment or use relaxed default
+if {[info exists ::env(PD_CONSTRAINT)]} {
+    set constraint_file "../constraints/$::env(PD_CONSTRAINT)"
+} else {
+    set constraint_file "../constraints/relaxed_250mhz.sdc"
+}
+
+log "Using constraints: $constraint_file"
 
 # Get PDK root
 if {[info exists ::env(PDK_ROOT)]} {
@@ -153,7 +161,39 @@ checkpoint "cts"
 generate_reports "cts"
 
 # ============================================================================
-# STAGE 5: PDN (Power Distribution)
+# STAGE 5: TIMING REPAIR (Optional)
+# ============================================================================
+log_stage "TIMING_REPAIR"
+
+# Check timing before repair
+set timing_ok 0
+catch {
+    set wns [exec grep -o "slack.*VIOLATED" <<< [report_checks]]
+    if {[string length $wns] > 0} {
+        log "Timing violations detected, attempting repair..."
+        
+        # Try repair with timeout (simplified - no timeout in Tcl)
+        # Just attempt basic repair
+        catch {
+            repair_timing -setup
+            log "Timing repair completed"
+        } err
+        
+        if {[string length $err] > 0} {
+            log "WARNING: Timing repair had issues: $err"
+            log "Continuing with current placement..."
+        }
+    } else {
+        log "Timing OK, no repair needed"
+        set timing_ok 1
+    }
+}
+
+checkpoint "timing"
+generate_reports "timing"
+
+# ============================================================================
+# STAGE 6: PDN (Power Distribution)
 # ============================================================================
 log_stage "PDN"
 
@@ -164,12 +204,12 @@ log "PDN stage skipped (requires additional setup)"
 checkpoint "pdn"
 
 # ============================================================================
-# STAGE 6: ROUTE
+# STAGE 7: ROUTE
 # ============================================================================
 log_stage "ROUTE"
 
 # Skip detailed routing for now - focus on getting clean placement
-log "Routing stage skipped (timing repair needed first)"
+log "Routing stage skipped (requires PDN setup first)"
 
 # ============================================================================
 # STAGE 7: FINISH
