@@ -72,6 +72,19 @@ synth:
 		stat; \
 		write_verilog $(SYNTH_DIR)/aes_top_netlist.v"
 
+# Synthesis for physical design (technology mapping to Sky130)
+synth-pd: pd-check
+	@echo "Running Yosys synthesis for physical design (Sky130)..."
+	$(YOSYS) -p "read_verilog $(RTL_FILES); \
+		synth -top aes_top; \
+		dfflibmap -liberty $(PDK_ROOT)/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/lib/sky130_osu_sc_15T_ls_tt_1P89_25C.ccs.lib; \
+		abc -liberty $(PDK_ROOT)/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/lib/sky130_osu_sc_15T_ls_tt_1P89_25C.ccs.lib -script +strash; \
+		techmap; \
+		opt -fast; \
+		abc -liberty $(PDK_ROOT)/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/lib/sky130_osu_sc_15T_ls_tt_1P89_25C.ccs.lib; \
+		stat -liberty $(PDK_ROOT)/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/lib/sky130_osu_sc_15T_ls_tt_1P89_25C.ccs.lib; \
+		write_verilog $(SYNTH_DIR)/aes_top_sky130.v"
+
 # Clean
 clean:
 	rm -rf work
