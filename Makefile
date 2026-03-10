@@ -143,3 +143,17 @@ pd-runs:
 pd-cleanup:
 	@cd $(PD_DIR)/runs && ls -t | tail -n +6 | xargs -r rm -rf
 	@echo "Cleaned old runs, kept last 5"
+
+# Complete PD flow with PDN and routing
+pd-complete: synth-pd pd-check
+	@echo "Running COMPLETE physical design flow (with PDN + Routing)..."
+	@mkdir -p $(PD_DIR)/runs
+	@cd $(PD_DIR) && $(OPENROAD) -exit scripts/pd_complete.tcl 2>&1 | tee runs/latest_complete.log
+	@echo "Complete flow finished. Check $(PD_DIR)/runs/ for results"
+
+# Run with specific constraint
+pd-mc: synth-pd pd-check
+	@echo "Running PD with multi-cycle constraints..."
+	@mkdir -p $(PD_DIR)/runs
+	@cd $(PD_DIR) && PD_CONSTRAINT=multicycle_50mhz.sdc $(OPENROAD) -exit scripts/pd_complete.tcl 2>&1 | tee runs/latest_mc.log
+	@echo "Multi-cycle flow finished"
