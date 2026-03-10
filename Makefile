@@ -157,3 +157,22 @@ pd-mc: synth-pd pd-check
 	@mkdir -p $(PD_DIR)/runs
 	@cd $(PD_DIR) && PD_CONSTRAINT=multicycle_50mhz.sdc $(OPENROAD) -exit scripts/pd_complete.tcl 2>&1 | tee runs/latest_mc.log
 	@echo "Multi-cycle flow finished"
+
+# New modular PD commands using pd_manager.py
+pd-new:
+	@python3 $(PD_DIR)/scripts/pd_manager.py create $(NAME)
+
+pd-start:
+	@python3 $(PD_DIR)/scripts/pd_manager.py start $(RUN)
+
+pd-quick:
+	@python3 $(PD_DIR)/scripts/pd_manager.py quick $(NAME)
+
+pd-list:
+	@python3 $(PD_DIR)/scripts/pd_manager.py list
+
+pd-status:
+	@python3 $(PD_DIR)/scripts/pd_manager.py status $(RUN)
+
+pd-view:
+	@$(PD_DIR)/scripts/visualize.sh
