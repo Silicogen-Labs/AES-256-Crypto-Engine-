@@ -1,0 +1,41 @@
+# Simulation artifacts
+work/
+*.vcd
+*.wlf
+transcript
+*.vvp
+
+# Synthesis artifacts (keep directory, ignore contents)
+synth/*.v
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# Build directories
+build/
+dist/
+
+# Silicogen AI skills (local only)
+.silicogen/
+
+# Silicogen process documentation (local only)
+.silicogen_process_documentation/
+
+# Silicogen rules (local only)
+.silicogenrules
+
+# MCP config (local only)
+mcp.json
