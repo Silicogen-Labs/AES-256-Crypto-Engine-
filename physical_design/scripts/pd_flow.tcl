@@ -32,12 +32,14 @@ log "Run directory: $run_dir"
 
 # Configuration
 set design_name "aes_top"
+set script_dir [file dirname [file normalize [info script]]]
+set pd_root [file dirname $script_dir]
 
 # Select constraint file based on environment or use relaxed default
 if {[info exists ::env(PD_CONSTRAINT)]} {
-    set constraint_file "../constraints/$::env(PD_CONSTRAINT)"
+    set constraint_file "$pd_root/constraints/$::env(PD_CONSTRAINT)"
 } else {
-    set constraint_file "../constraints/relaxed_250mhz.sdc"
+    set constraint_file "$pd_root/constraints/relaxed_250mhz.sdc"
 }
 
 log "Using constraints: $constraint_file"
@@ -108,7 +110,8 @@ log "Reading liberty..."
 read_liberty $pdk_root/sky130/sky130A/libs.ref/sky130_osu_sc_15t_ls/lib/sky130_osu_sc_15T_ls_tt_1P89_25C.ccs.lib
 
 log "Reading netlist..."
-read_verilog ../synth/aes_top_sky130.v
+set project_root [file dirname $pd_root]
+read_verilog $project_root/synth/aes_top_sky130.v
 
 log "Linking design..."
 link_design $design_name
