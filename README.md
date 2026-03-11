@@ -110,22 +110,64 @@ Generates gate-level netlist in `synth/aes_top_netlist.v`
 ```bash
 # Set PDK_ROOT environment variable
 export PDK_ROOT=/path/to/open_pdks
+
+# Add OpenROAD to PATH (if not already installed)
+export PATH="/path/to/OpenROAD/bin:$PATH"
 ```
 
-**Quick Start:**
+**Quick Start - Using pd_manager.py:**
 ```bash
-# Full physical design flow (synthesis + floorplan + placement + routing + GDS)
+# Create and start a new PD run (uses multicycle_50mhz.sdc by default)
+python3 physical_design/scripts/pd_manager.py quick my_run
+
+# Create run with specific constraint
+python3 physical_design/scripts/pd_manager.py quick my_run conservative.sdc
+
+# List all runs
+python3 physical_design/scripts/pd_manager.py list
+
+# Check status of a run
+python3 physical_design/scripts/pd_manager.py status run_20260310_222351
+```
+
+**Available Constraints:**
+| Constraint | Period | Target | Use Case |
+|------------|--------|--------|----------|
+| `conservative.sdc` | 50ns (20MHz) | Relaxed | Best for initial runs |
+| `multicycle_50mhz.sdc` | 20ns (50MHz) | Multi-cycle | **Recommended** |
+| `moderate_50mhz.sdc` | 20ns (50MHz) | Standard | May have violations |
+| `aggressive_100mhz.sdc` | 10ns (100MHz) | Aggressive | Requires pipelined RTL |
+| `relaxed_250mhz.sdc` | 4ns (250MHz) | Very aggressive | For reference only |
+
+**Using Makefile:**
+```bash
+# Full physical design flow
 make pd-quick NAME=my_run
 
 # View layout in KLayout
 make pd-view
+
+# List all PD runs
+make pd-list
+
+# Check status of a specific run
+make pd-status RUN=<id>
 ```
 
-**Available Commands:**
+**Opening Designs:**
 ```bash
-make pd-list              # List all PD runs
-make pd-status RUN=<id>   # Check status of a specific run
-make pd-view              # Open latest layout in KLayout
+# Open in OpenROAD GUI
+cd physical_design/runs/run_<timestamp>
+openroad -gui -db results/aes_top.odb
+
+# Open specific checkpoint
+openroad -gui -db checkpoints/detailed_route.odb
+
+# View in KLayout
+./physical_design/scripts/open_in_klayout.sh run_<timestamp>
+
+# View GDS in Magic
+magic results/aes_top.mag
 ```
 
 ## Test Results

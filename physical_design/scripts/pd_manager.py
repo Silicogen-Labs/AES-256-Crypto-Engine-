@@ -119,8 +119,11 @@ class PDManager:
         env['PD_RUN_DIR'] = str(run_dir)
         env['PD_CONSTRAINT'] = constraint
         
+        # Find openroad binary
+        openroad_bin = env.get('OPENROAD_BIN', '/silicogenplayground/Work/vlsi/tools/OpenROAD-flow-scripts/tools/install/OpenROAD/bin/openroad')
+        
         script_path = str(PD_ROOT / 'scripts' / 'pd_complete.tcl')
-        cmd = ['openroad', '-exit', script_path]
+        cmd = [openroad_bin, '-exit', script_path]
         
         log_file = run_dir / 'logs' / 'flow.log'
         

@@ -42,3 +42,25 @@ mcp.json
 
 # Session files
 session-*.md
+
+# Physical Design runs (large binary files)
+physical_design/runs/
+physical_design/*.log
+
+# OpenROAD database files
+*.odb
+
+# GDS files (large)
+*.gds
+
+# DEF files (large)
+*.def
+
+# Magic files
+*.mag
+
+# Report files (generated)
+physical_design/*/reports/
+
+# PD logs
+physical_design/*/logs/
