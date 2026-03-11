@@ -39,3 +39,6 @@ dist/
 
 # MCP config (local only)
 mcp.json
+
+# Session files
+session-*.md
